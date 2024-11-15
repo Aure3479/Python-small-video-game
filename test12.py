@@ -1,7 +1,6 @@
 import pygame
 import csv
 import random
-import time
 from datetime import datetime
 import librosa
 import threading
@@ -154,8 +153,6 @@ class Game:
     def load_music_list(self):
         # Load available music files
         self.music_list = [f for f in os.listdir('musics') if f.endswith('.mp3')]
-
-    # The rest of the methods remain largely the same, but need to be adjusted to use the new sprite handling
 
     def select_music(self):
         # Music selection menu
@@ -335,7 +332,7 @@ class Game:
         for enemy in self.enemies:
             if enemy.active and enemy.direction == player_input:
                 distance = ((self.player.x - enemy.x) ** 2 + (self.player.y - enemy.y) ** 2) ** 0.5
-                if distance < 200:  # Maximum threshold
+                if distance < 200:  # Seuil pour pouvoir toucher les zombies
                     enemy.active = False
                     self.death_marks.append({'x': enemy.x, 'y': enemy.y, 'start_time': pygame.time.get_ticks()})
                     reaction_time = current_time - enemy.spawn_time  # Calcul du temps de réaction
