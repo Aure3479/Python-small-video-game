@@ -30,16 +30,14 @@ Average Reaction Time : Average reaction time from the moment a zombie showed up
 
 
 Python files: 
-test12.py is the main code 
-
-check_active_ports.py is used to check all the ports that are currently in use (use to decide wich COM your arduino is using)
-
-getpng_poeg.py is used to convert a svg file to png or jpeg file
+ -test12.py is the main code 
+ -check_active_ports.py is used to check all the ports that are currently in use (use to decide wich COM your arduino is using)
+ -getpng_poeg.py is used to convert a svg file to png or jpeg file
 
 Csv files : 
-Folder players : all the different players and their data around the game
-leaderboard.csv: leaderboard that is shown on the leaderboard page
-music_info.csv : info around the music files (generated from the jupyter notebook)
+ -Folder players : all the different players and their data around the game
+ -leaderboard.csv: leaderboard that is shown on the leaderboard page
+ -music_info.csv : info around the music files (generated from the jupyter notebook)
 
 Musics: 
 musics folder : all the .mp3 musics
