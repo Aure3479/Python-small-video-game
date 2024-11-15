@@ -67,6 +67,8 @@ class Enemy:
         self.angle = self.get_angle_from_direction(direction)
         self.rotated_image = pygame.transform.rotate(self.image, self.angle)
         self.rect = self.rotated_image.get_rect(center=(self.x, self.y))
+        self.spawn_time = pygame.time.get_ticks()
+
 
     def get_angle_from_direction(self, direction):
         if direction == 'up':
@@ -109,6 +111,8 @@ class Game:
         self.blocks_per_direction = {'up': 0, 'down': 0, 'left': 0, 'right': 0}
         self.start_time = None
         self.end_time = None
+        self.reaction_times = []
+
         self.speed_multiplier = 1.0
         self.background_image = None
         self.bg_position = (0, 0)
@@ -203,12 +207,13 @@ class Game:
         # Path to the player's CSV file
         player_file = os.path.join('players', f'{self.name}.csv')
         file_exists = os.path.isfile(player_file)
+        average_reaction_time = sum(self.reaction_times) / len(self.reaction_times) if self.reaction_times else 0
         with open(player_file, mode='a', newline='') as file:
             writer = csv.writer(file)
             # Write header if the file is new or empty
             if not file_exists or os.path.getsize(player_file) == 0:
                 writer.writerow(['Name', 'Score', 'Total Blocks', 'Just in Time', 'Normal', 'Too Early',
-                                 'Up', 'Down', 'Left', 'Right', 'Start Time', 'End Time', 'Duration', 'Music'])
+                                 'Up', 'Down', 'Left', 'Right', 'Start Time', 'End Time', 'Duration', 'Music','Average Reaction Time'])
             duration = (self.end_time - self.start_time).total_seconds()
             writer.writerow([
                 self.name,
@@ -224,15 +229,16 @@ class Game:
                 self.start_time.strftime("%Y-%m-%d %H:%M:%S"),
                 self.end_time.strftime("%Y-%m-%d %H:%M:%S"),
                 duration,
-                os.path.basename(self.music_file)  # Save the music name
+                os.path.basename(self.music_file),  # Save the music name
+                average_reaction_time
             ])
         # Update the main leaderboard
         file_exists = os.path.isfile(self.leaderboard_file)
         with open(self.leaderboard_file, mode='a', newline='') as file:
             writer = csv.writer(file)
             if not file_exists or os.path.getsize(self.leaderboard_file) == 0:
-                writer.writerow(['Name', 'Score', 'Date'])
-            writer.writerow([self.name, self.score, self.end_time.strftime("%Y-%m-%d %H:%M:%S")])
+                writer.writerow(['Name', 'Score', 'Date','Music'])
+            writer.writerow([self.name, self.score, self.end_time.strftime("%Y-%m-%d %H:%M:%S"),os.path.basename(self.music_file)])
 
     def load_leaderboard(self):
         leaderboard_data = []
@@ -251,7 +257,7 @@ class Game:
         leaderboard_data = self.load_leaderboard()
         y_offset = 100
         for entry in leaderboard_data:
-            display_text(f"{entry[0]}: {entry[1]} - {entry[2]}", WIDTH // 4, y_offset, WHITE)
+            display_text(f"{entry[0]}: {entry[1]} - {entry[2]} - on music: {entry[3]}", WIDTH // 20, y_offset, WHITE)
             y_offset += 40
         display_text("Press ENTER to play", WIDTH // 4, HEIGHT - 100, WHITE)
         pygame.display.flip()
@@ -325,12 +331,16 @@ class Game:
         return False
 
     def check_defense(self, player_input):
+        current_time = pygame.time.get_ticks()
         for enemy in self.enemies:
             if enemy.active and enemy.direction == player_input:
                 distance = ((self.player.x - enemy.x) ** 2 + (self.player.y - enemy.y) ** 2) ** 0.5
                 if distance < 200:  # Maximum threshold
                     enemy.active = False
                     self.death_marks.append({'x': enemy.x, 'y': enemy.y, 'start_time': pygame.time.get_ticks()})
+                    reaction_time = current_time - enemy.spawn_time  # Calcul du temps de réaction
+                    self.reaction_times.append(reaction_time)  # Nouvelle liste pour stocker les temps de réaction
+
                     self.score += int(20 / (distance*0.02))
                     self.block_counts['total'] += 1
                     self.blocks_per_direction[player_input] += 1
@@ -421,8 +431,11 @@ class Game:
             # Check if the music has ended
             if not pygame.mixer.music.get_busy():
                 # Restart the music and increase the speed
+                pygame.mixer.music.load(self.music_file)
                 pygame.mixer.music.play()
-                self.speed_multiplier += 0.1  # Increase speed by 10% each loop
+                self.speed_multiplier += 0.2  # Increase speed by 10% each loop
+                self.score+=1000
+                self.enemy_spawn_index = 0
 
             # Update enemies
             for enemy in self.enemies:
