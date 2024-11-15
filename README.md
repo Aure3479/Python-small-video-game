@@ -28,9 +28,12 @@ Average Reaction Time : Average reaction time from the moment a zombie showed up
 - one showing off how the game works and how it is registered in the corresponding csv file
 - one (much shorter) showing off the pause button works
 
+
 Python files: 
 test12.py is the main code 
+
 check_active_ports.py is used to check all the ports that are currently in use (use to decide wich COM your arduino is using)
+
 getpng_poeg.py is used to convert a svg file to png or jpeg file
 
 Csv files : 
