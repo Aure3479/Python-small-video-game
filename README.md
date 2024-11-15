@@ -12,17 +12,17 @@ When you chose the music and put in a username the game will take some time to l
 
 For a user study we load all the different kinds of data at the end of a player's run. 
 As long as the same user uses the same player name , the corresponding csv file of the player will be updated(or created) with those informations:
-Name: Name of player
-Score: Final score
-Total Blocks: number of zombies killed
-Just in Time: zombies killed that were close
-Normal: zombies killed that were at a normal distance
-Too Early: Zombies killed that were too far
-Up,Down,Left,Right: number of zombies killed in each direction 
-Start Time,End Time: Start and end time of the user
-Duration: time during the run 
-Music: name of the music 
-Average Reaction Time : Average reaction time from the moment a zombie showed up to it being dead
+- Name: Name of player
+- Score: Final score
+- Total Blocks: number of zombies killed
+- Just in Time: zombies killed that were close
+- Normal: zombies killed that were at a normal distance
+- Too Early: Zombies killed that were too far
+- Up,Down,Left,Right: number of zombies killed in each direction 
+- Start Time,End Time: Start and end time of the user
+- Duration: time during the run 
+- Music: name of the music 
+- Average Reaction Time : Average reaction time from the moment a zombie showed up to it being dead
 
 2 video demos are in the file : 
 - one showing off how the game works and how it is registered in the corresponding csv file
